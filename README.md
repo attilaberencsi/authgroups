@@ -2,7 +2,7 @@
 
 `THIS TOOL IS UNDER DEVELOPMENT, DO NOT USE FOR PRODUCTION USAGE ALREADY.` 
 
-Provides quick access to authorization groups and their usage. 
+Provides quick access to authorization groups and their usage and management. 
 
 Features
 - lists Authorization Groups
