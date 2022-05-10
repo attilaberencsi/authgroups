@@ -1,6 +1,6 @@
 # Authorization Groups Helper Tool
 
-`THIS TOOL IS UNDER DEVELOPMENT, DO NOT USE YET FOR PRODUCTION USAGE.` 
+`THIS TOOL IS UNDER DEVELOPMENT, DO NOT USE FOR PRODUCTION USAGE ALREADY.` 
 
 Provides quick access to authorization groups and their usage. 
 
