@@ -77,10 +77,37 @@ START-OF-SELECTION.
 
       ENDLOOP.
 
+      "Adjust Field Catalog to hide unnecessary fields
+      DATA fcat_grp_in_use TYPE slis_t_fieldcat_alv.
+
+      CALL FUNCTION 'REUSE_ALV_FIELDCATALOG_MERGE'
+        EXPORTING
+          i_structure_name       = 'ZSAPDEV_S_MAINT_AUTHGRPS'
+        CHANGING
+          ct_fieldcat            = fcat_grp_in_use
+        EXCEPTIONS
+          inconsistent_interface = 1
+          program_error          = 2
+          OTHERS                 = 3.
+      IF sy-subrc <> 0.
+        MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+          WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      ENDIF.
+
+      LOOP AT fcat_grp_in_use ASSIGNING FIELD-SYMBOL(<field_meta>).
+        CASE <field_meta>-fieldname.
+          WHEN 'OBJECT' OR 'NO_HEADER_REF'.
+            <field_meta>-no_out = abap_true.
+        ENDCASE.
+      ENDLOOP.
+
       "Show List of Auth.Groups in use with table/view name
       CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
         EXPORTING
           i_structure_name = 'ZSAPDEV_S_MAINT_AUTHGRPS'
+          it_fieldcat      = fcat_grp_in_use
+          is_layout        = VALUE slis_layout_alv( zebra = abap_true colwidth_optimize = abap_true cell_merge = 'N' )
+          i_grid_title     = CONV lvc_title( 'Authorization Group Usage in Maintenance Dialogs' )  "#EC NOTEXT
         TABLES
           t_outtab         = maint_auth_groups
         EXCEPTIONS

@@ -40,6 +40,12 @@
      <ENTRY>Show Groups in Use(Table/View)</ENTRY>
      <LENGTH>38</LENGTH>
     </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_GRP</KEY>
+     <ENTRY>Authorization Groups</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>
