@@ -23,14 +23,14 @@ ENDCLASS.
 CLASS lcl_authgroup_app IMPLEMENTATION.
 
   METHOD submit_stbrg_groups.
-    SUBMIT stbrg_groups
+    SUBMIT stbrg_groups                                  "#EC CI_SUBMIT
       WITH p_obj = 'S_TABU_DIS'
       WITH p_mode = i_mode
     AND RETURN.
   ENDMETHOD.
 
   METHOD submit_stddat_maintain.
-    SUBMIT stddat_maintain
+    SUBMIT stddat_maintain                               "#EC CI_SUBMIT
       WITH p_dispm = 'R'
       WITH p_mode = 'U'
     VIA SELECTION-SCREEN
@@ -44,7 +44,7 @@ CLASS lcl_authgroup_app IMPLEMENTATION.
 
 
     "Auth.Group usages
-    SELECT DISTINCT tabname, cclass AS brgru FROM tddat
+    SELECT DISTINCT tabname, cclass AS brgru FROM tddat "#EC CI_SGLSELECT #EC CI_BYPASS
       INTO CORRESPONDING FIELDS OF TABLE @maint_auth_groups
       WHERE cclass IN @s_grp
         AND cclass <> ''
@@ -58,7 +58,7 @@ CLASS lcl_authgroup_app IMPLEMENTATION.
     SORT auth_groups BY brgru.
 
     "Table / View Texts
-    SELECT tabname, tabclass, ddtext FROM dd02v INTO TABLE @DATA(tab_hdrs)
+    SELECT tabname, tabclass, ddtext FROM dd02v INTO TABLE @DATA(tab_hdrs) "#EC CI_NO_TRANSFORM
       FOR ALL ENTRIES IN @maint_auth_groups
         WHERE tabname = @maint_auth_groups-tabname
           AND actflag = @space
@@ -66,7 +66,7 @@ CLASS lcl_authgroup_app IMPLEMENTATION.
 
     SORT tab_hdrs BY tabname.
 
-    SELECT viewname, ddtext FROM dd25v INTO TABLE @DATA(view_hdrs)
+    SELECT viewname, ddtext FROM dd25v INTO TABLE @DATA(view_hdrs) "#EC CI_NO_TRANSFORM
       FOR ALL ENTRIES IN @maint_auth_groups
         WHERE viewname = @maint_auth_groups-tabname
           AND as4local = 'A'
@@ -155,9 +155,88 @@ CLASS lcl_authgroup_app IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD show_roles_with_group.
-    SELECT * FROM agr_1251 INTO TABLE @DATA(auth_records)
+
+    DATA:
+      auth_group_ranges TYPE RANGE OF agval.
+
+    "Fetch all roles having authorization groups
+    SELECT agr_name, object, auth, low, high FROM agr_1251 INTO TABLE @DATA(auth_records) "#EC CI_GENBUFF
       WHERE object = 'S_TABU_DIS'
+        AND field = 'DICBERCLS'
         AND deleted <> @abap_true.
+
+    IF sy-subrc <> 0.
+      WRITE 'New World Order'.                              "#EC NOTEXT
+      RETURN.
+    ENDIF.
+
+    "Filter by Authorization Group
+    IF p_grprol IS NOT INITIAL.
+
+      LOOP AT auth_records ASSIGNING FIELD-SYMBOL(<auth_record>).
+
+        auth_group_ranges = VALUE #(
+          (
+            sign = 'I'
+            option = COND #( WHEN <auth_record>-high IS NOT INITIAL THEN 'BT' WHEN <auth_record>-low CS '*' THEN 'CP' ELSE 'EQ' )
+            low = <auth_record>-low
+            high = <auth_record>-high
+          )
+        ).
+
+        IF p_grprol NOT IN auth_group_ranges.
+          DELETE auth_records.
+        ENDIF.
+
+      ENDLOOP.
+    ENDIF.
+
+    "Adjust Field Catalog to hide unnecessary fields
+    DATA fcat_grp_role TYPE slis_t_fieldcat_alv.
+
+    CALL FUNCTION 'REUSE_ALV_FIELDCATALOG_MERGE'
+      EXPORTING
+        i_structure_name       = 'AGR_1251'
+      CHANGING
+        ct_fieldcat            = fcat_grp_role
+      EXCEPTIONS
+        inconsistent_interface = 1
+        program_error          = 2
+        OTHERS                 = 3.
+    IF sy-subrc <> 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
+
+    LOOP AT fcat_grp_role ASSIGNING FIELD-SYMBOL(<field_meta>).
+      CASE <field_meta>-fieldname.
+        WHEN 'OBJECT' OR 'COUNTER' OR 'VARIANT' OR 'FIELD' OR 'DELETED' OR 'MODIFIED' OR 'COPIED' OR 'NEU' OR 'NODE'.
+          <field_meta>-no_out = abap_true.
+        WHEN 'LOW'.
+          <field_meta>-seltext_s = <field_meta>-seltext_m = <field_meta>-seltext_l = 'Low Value'. "#EC NOTEXT
+        WHEN 'HIGH'.
+          <field_meta>-seltext_s = <field_meta>-seltext_m = <field_meta>-seltext_l = 'High Value'. "#EC NOTEXT
+      ENDCASE.
+    ENDLOOP.
+
+    "Display results
+    CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+      EXPORTING
+        i_structure_name = 'AGR_1251'
+        it_fieldcat      = fcat_grp_role
+        is_layout        = VALUE slis_layout_alv( zebra = abap_true colwidth_optimize = abap_true cell_merge = 'N' )
+        i_grid_title     = CONV lvc_title( 'Authorization Group Usage in Roles' )  "#EC NOTEXT
+      TABLES
+        t_outtab         = auth_records
+      EXCEPTIONS
+        program_error    = 1
+        OTHERS           = 2.
+
+    IF sy-subrc <> 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
+
   ENDMETHOD.
 
 ENDCLASS.

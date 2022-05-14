@@ -2,11 +2,26 @@
 *& Report zsapdev_authgroup
 *&---------------------------------------------------------------------*
 *& Authorization Group Helper
-*&    - List Authorization Groups
-*&    - List Authorization Groups in use to protect table maintenance dialogs
-*&    - List Authorizations Profiles / PFCG Roles where a given Authorization group is embedded
-*&    - Maintain Authorization Groups
-*&    - Assign Authorization Group to Table/View Maintenance Dialog
+*&    - List Authorization Groups (SE54 Quick Jump)
+*&    - List Authorization Groups used in Table/View maintenance dialogs (Custom Feature)
+*&    - List Authorizations Profiles / PFCG Roles where a given Authorization Group is embedded (Custom Feature)
+*&    - Maintain Authorization Groups (SE54 Quick Jump)
+*&    - Assign Authorization Group to Table/View Maintenance Dialog (SE54 Quick Jump)
+*&---------------------------------------------------------------------*
+*& Author: Attila Berencsi, sapdev.eu
+*& Version Info (YYMMDD): v220514
+*& https://github.com/attilaberencsi/authgroups
+*& Licence: MIT
+*&---------------------------------------------------------------------*
+*& Validated on ABAP 1909.
+*&
+*& Software Component  Release     Support Package       Support Package Level  Description
+*& ========================================================================================================
+*& S4FND               104         SAPK-10402INS4FND     0002                   Foundation
+*& SAP_ABA             75E         SAPK-75E02INSAPABA    0002                   Cross-Application Component
+*& SAP_BASIS           754         SAPK-75402INSAPBASIS  0002                   SAP Basis Component
+*& SAP_GWFND           754         SAPK-75402INSAPGWFND  0002                   SAP Gateway Foundation
+*& SAP_UI              754         SAPK-75404INSAPUI     0004                   User Interface Technology
 *&---------------------------------------------------------------------*
 REPORT zsapdev_authgroup.
 
@@ -49,7 +64,7 @@ START-OF-SELECTION.
       app->show_authgroups_in_use( ).
 
     WHEN p_roles."Show roles having Authorization Groups
-
+      app->show_roles_with_group( ).
 
     WHEN p_assign."Assign Authorization Group to Table/View Maintenance
       app->submit_stddat_maintain( ).
