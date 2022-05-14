@@ -13,10 +13,10 @@ Provides quick access to Authorization Groups usage and management.
 
 Validated on ABAP 1909.
 
-| Software Component | Release | Support Package     | Support Package Level | Description                |
-| ------------------ | ------- | ------------------- | --------------------- | -------------------------- |
-| S4FND              | 104     | SAPK-10402INS4FND   | 0002                  | Foundation                 |
-| SAP_ABA            | 75E     | SAPK-75E02INSAPABA  | 0002                  | Cross-Application Component|
-SAP_BASIS           754         SAPK-75402INSAPBASIS | 0002                  | SAP Basis Component        |
-SAP_GWFND           754         SAPK-75402INSAPGWFND | 0002                  | SAP Gateway Foundation     |
-SAP_UI              754         SAPK-75404INSAPUI    | 0004                  | User Interface Technology  |
+| Software Component | Release | Support Package      | Support Package Level | Description                |
+| ------------------ | ------- | -------------------- | --------------------- | -------------------------- |
+| S4FND              | 104     | SAPK-10402INS4FND    | 0002                  | Foundation                 |
+| SAP_ABA            | 75E     | SAPK-75E02INSAPABA   | 0002                  | Cross-Application Component|
+| SAP_BASIS          | 754     | SAPK-75402INSAPBASIS | 0002                  | SAP Basis Component        |
+| SAP_GWFND          | 754     | SAPK-75402INSAPGWFND | 0002                  | SAP Gateway Foundation     |
+| SAP_UI             | 754     | SAPK-75404INSAPUI    | 0004                  | User Interface Technology  |
