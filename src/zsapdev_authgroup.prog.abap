@@ -24,7 +24,9 @@ SELECT-OPTIONS:
 
 PARAMETERS:
   p_roles  RADIOBUTTON GROUP ro,
-  p_star   AS CHECKBOX,
+  p_grprol TYPE  tddat-cclass.
+
+PARAMETERS:
   p_edigrp RADIOBUTTON GROUP ro,
   p_assign RADIOBUTTON GROUP ro.
 
@@ -44,7 +46,10 @@ START-OF-SELECTION.
       app->submit_stbrg_groups( i_mode = 'U' ). "update mode
 
     WHEN p_usegrp. "Authorization Groups Used in Table/View Maintenance Dialogs
-     app->show_authgroups_in_use( ).
+      app->show_authgroups_in_use( ).
+
+    WHEN p_roles."Show roles having Authorization Groups
+
 
     WHEN p_assign."Assign Authorization Group to Table/View Maintenance
       app->submit_stddat_maintain( ).

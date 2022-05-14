@@ -36,6 +36,18 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_GRPROL</KEY>
+     <ENTRY>Authorization Group</ENTRY>
+     <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_ROLES</KEY>
+     <ENTRY>Roles with Authorization Group</ENTRY>
+     <LENGTH>38</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_USEGRP</KEY>
      <ENTRY>Show Groups in Use(Table/View)</ENTRY>
      <LENGTH>38</LENGTH>

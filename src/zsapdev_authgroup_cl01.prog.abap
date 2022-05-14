@@ -15,6 +15,9 @@ CLASS lcl_authgroup_app DEFINITION CREATE PUBLIC.
     "! Authorization Groups Used in Table/View Maintenance Dialogs
     METHODS show_authgroups_in_use.
 
+    "! "Show roles having Authorization Groups
+    METHODS show_roles_with_group.
+
 ENDCLASS.
 
 CLASS lcl_authgroup_app IMPLEMENTATION.
@@ -143,11 +146,18 @@ CLASS lcl_authgroup_app IMPLEMENTATION.
       EXCEPTIONS
         program_error    = 1
         OTHERS           = 2.
+
     IF sy-subrc <> 0.
       MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
         WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD show_roles_with_group.
+    SELECT * FROM agr_1251 INTO TABLE @DATA(auth_records)
+      WHERE object = 'S_TABU_DIS'
+        AND deleted <> @abap_true.
   ENDMETHOD.
 
 ENDCLASS.
