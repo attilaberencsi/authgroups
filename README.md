@@ -1,6 +1,7 @@
 # Authorization Groups Helper Tool
 
 Provides quick access to Authorization Groups usage and management. 
+
 Full documentation available at: https://www.sapdev.eu/authorization-group-tool/
 
 ## Features
